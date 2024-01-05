@@ -80,15 +80,28 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
 // LOGS ROUTE
 app.get('/api/users/:_id/logs', async (req, res) => {
   const id = req.params._id;
-  if (!id) {
-    return res.json({ error: 'Please provide an id' });
-  }
+  const { limit, from, to } = req.query;
+  if (!id) return res.json({ error: 'Please provide an id' });
 
   try {
     const user = await User.findById(id);
     if (!user) return res.json({ error: 'User not found!' });
 
-    const logs = await Exercise.find({ uid: id });
+    let logs = await Exercise.find({ uid: id });
+
+    if (limit) {
+      logs.splice(limit);
+    }
+
+    if (from) {
+      const fromDate = new Date(from);
+      logs = logs.filter((log) => log.date >= fromDate);
+    }
+
+    if (to) {
+      const toDate = new Date(to);
+      logs = logs.filter((log) => log.date <= toDate);
+    }
 
     res.json({
       username: user.username,
@@ -101,7 +114,7 @@ app.get('/api/users/:_id/logs', async (req, res) => {
       })),
     });
   } catch (error) {
-    res.json({ error });
+    res.json({ error: error.message || 'Error while fetching logs' });
   }
 });
 
