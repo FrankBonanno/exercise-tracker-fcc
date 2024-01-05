@@ -95,12 +95,12 @@ app.get('/api/users/:_id/logs', async (req, res) => {
 
     if (from) {
       const fromDate = new Date(from);
-      logs = logs.splice().filter((log) => log.date >= fromDate);
+      logs = logs.filter((log) => log.date >= fromDate);
     }
 
     if (to) {
       const toDate = new Date(to);
-      logs = logs.splice().filter((log) => log.date <= toDate);
+      logs = logs.filter((log) => log.date <= toDate);
     }
 
     res.json({
