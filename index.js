@@ -90,17 +90,17 @@ app.get('/api/users/:_id/logs', async (req, res) => {
     let logs = await Exercise.find({ uid: id });
 
     if (limit) {
-      logs.splice(limit);
+      logs.splice(parseInt(limit));
     }
 
     if (from) {
       const fromDate = new Date(from);
-      logs = logs.filter((log) => log.date >= fromDate);
+      logs = logs.splice().filter((log) => log.date >= fromDate);
     }
 
     if (to) {
       const toDate = new Date(to);
-      logs = logs.filter((log) => log.date <= toDate);
+      logs = logs.splice().filter((log) => log.date <= toDate);
     }
 
     res.json({
