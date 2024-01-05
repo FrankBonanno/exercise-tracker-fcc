@@ -81,6 +81,8 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
 app.get('/api/users/:_id/logs', async (req, res) => {
   const id = req.params._id;
   const { limit, from, to } = req.query;
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
   if (!id) return res.json({ error: 'Please provide an id' });
 
   try {
@@ -96,13 +98,18 @@ app.get('/api/users/:_id/logs', async (req, res) => {
     }
 
     if (from) {
-      const fromDate = new Date(from);
-      logs = logs.filter((log) => log.date >= fromDate);
+      // Add a validation step for the 'from' date format
+      if (dateRegex.test(from)) {
+        const fromDate = new Date(from);
+        logs = logs.filter((log) => log.date >= fromDate);
+      }
     }
 
     if (to) {
-      const toDate = new Date(to);
-      logs = logs.filter((log) => log.date <= toDate);
+      if (dateRegex.test(to)) {
+        const toDate = new Date(to);
+        logs = logs.filter((log) => log.date <= toDate);
+      }
     }
 
     res.json({
