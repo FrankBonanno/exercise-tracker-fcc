@@ -94,7 +94,7 @@ app.get('/api/users/:_id/logs', async (req, res) => {
     if (!logs) return res.json({ error: 'No logs found!' });
 
     if (limit) {
-      logs.splice(parseInt(limit));
+      if (!isNaN(parseInt(limit))) logs.splice(parseInt(limit));
     }
 
     if (from) {
